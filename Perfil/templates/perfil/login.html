@@ -1,0 +1,27 @@
+{% extends "Eventiket/base.html" %}
+{% load static %}
+{% block content %}
+<head>
+    <link href="{% static 'Eventiket/css/login.css' %}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<div class="box">
+    <span class="borderLine"></span>
+    <form action="{% url 'login' %}" method="post" style="color: aliceblue;">
+        {% csrf_token %}
+        <h2>Iniciar Sesión</h2>
+        {{form}}
+        <div class="links">
+            <a href="#">Has olvidado tu contraseña?</a>
+            <a href="{% url 'vregistro' %}">Crear Usuario</a>
+        </div>
+        <button class="botonInicioSesion" type="submit" value="Iniciar Sesión">Iniciar Sesion</button>
+    </form>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+</div>
+ <!--<script src="{% static 'Eventiket/vendor/bootstrap/js/perfil.js' %}"></script>-->
+{% endblock %}

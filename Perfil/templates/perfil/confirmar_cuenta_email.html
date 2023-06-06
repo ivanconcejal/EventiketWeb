@@ -1,0 +1,7 @@
+<h2>Verificación de cuenta</h2>
+    <p>Estimado/a {{ user.username }},</p>
+    <p>Gracias por registrarte en nuestro sitio. Para completar el proceso de creación de tu cuenta, por favor haz clic en el siguiente enlace para verificar tu dirección de correo electrónico:</p>
+    <p><a class="btn" href="http://{{ domain }}{% url 'verificar_cuenta' uidb64=uid token=token %}">Verificar cuenta</a></p>
+    <p>Si no realizaste esta solicitud, puedes ignorar este correo electrónico.</p>
+    <p>Saludos,</p>
+    <p>El equipo de Eventiket</p>

@@ -1,0 +1,34 @@
+/* perfil.css */
+
+.boxP {
+    background-color: #fde9d9;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    color: #2e4a66;
+  }
+  
+  p {
+    color: #2e4a66;
+    margin-bottom: 10px;
+  }
+  
+  a {
+    color: #ffffff;
+    background-color: #f77f00;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    background-color: #fbc287;
+  }
+  
+
+
+

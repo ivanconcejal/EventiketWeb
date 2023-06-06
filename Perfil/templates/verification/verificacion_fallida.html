@@ -1,0 +1,43 @@
+{% extends "Eventiket/base.html" %}
+{% load static %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación fallida</title>
+    <style>
+        /* Estilos CSS modernos para la página de verificación fallida */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .error-message {
+            color: #ff0000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Verificación fallida</h2>
+        <p class="error-message">¡La verificación de cuenta ha fallado!</p>
+        <p>Lo sentimos, no hemos podido verificar tu cuenta. Asegúrate de utilizar el enlace de verificación correcto o ponte en contacto con nuestro equipo de soporte para obtener ayuda.</p>
+    </div>
+</body>
+{% endblock %}

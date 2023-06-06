@@ -1,0 +1,99 @@
+{% extends "Eventiket/base.html" %}
+{% block content %}
+{% load static %}
+<link href="{% static 'Eventiket/css/sala_detail.css' %}" rel="stylesheet">
+<body>
+  <div class="body">
+    <div class="pelicula-card">
+      <div class="pelicula-img">
+          <img src="{{imagen.url}}">
+      </div>
+      <div class="pelicula-info">
+          <h2>{{titulo}}</h2>
+          <p>{{horas}}h {{minutos}}min</p>
+          <p>{{edad}}</p>
+          <p>Dia {{fecha}} {{hora}}</p>
+          <p>Precio: {{precio}}€</p>
+      </div>
+    </div>
+    <!--<p>{{ num_filas }}</p>
+    <p>{{ num_columnas }}</p>-->
+    <form method="post" action="{% url 'reserva' sesion_id=sesion_id %}">
+      {% csrf_token %}
+      <input type="hidden" name="butacas_seleccionadas" id="butacas-seleccionadas-input">
+      <div class="containerS">
+        <h1>{{ nombre }}</h1>
+        <div>
+          <ul class="showcase">
+            <li>
+              <div class="seat"></div>
+              <small>N/A</small>
+            </li>
+        
+            <li>
+              <div class="seat selected"></div>
+              <small>Seleccionado</small>
+            </li>
+        
+            <li>
+              <div class="seat occupied"></div>
+              <small>Ocupado</small>
+            </li>
+          </ul>
+        </div>
+        <div class="screen"></div>
+        <div id="sala-container"
+            data-num-filas="{{ num_filas }}"
+            data-num-columnas="{{ num_columnas }}"
+            data-fila-seleccionada="{{ fila_seleccionada }}"
+            data-columna-seleccionada="{{ columna_seleccionada }}">
+      </div>
+      <p id="butaca-seleccionada"></p>
+      </div>
+      <div class="button-container">
+        <button type="submit" class="btn btn-primary">Reservar</button>
+      </div>
+    </form>
+    </div>
+    <script>
+        function generarSala() {
+            const salaContainer = document.getElementById('sala-container');
+            const numFilas = salaContainer.dataset.numFilas;
+            const numColumnas = salaContainer.dataset.numColumnas;
+            const filaSeleccionada = salaContainer.dataset.filaSeleccionada;
+            const columnaSeleccionada = salaContainer.dataset.columnaSeleccionada;
+            const butacaSeleccionada = document.getElementById('butaca-seleccionada');
+  
+            for (let fila = 1; fila <= numFilas; fila++) {
+                const filaContainer = document.createElement('div');
+                filaContainer.classList.add('row');
+    
+            for (let columna = 1; columna <= numColumnas; columna++) {
+            const butaca = document.createElement('div');
+            butaca.classList.add('seat');
+            butaca.dataset.fila = fila;
+            butaca.dataset.columna = columna;
+            
+            if (fila === filaSeleccionada && columna === columnaSeleccionada) {
+                butaca.classList.add('selected');
+            }
+            
+            butaca.addEventListener('click', function() {
+                const numFila = this.dataset.fila;
+                const numColumna = this.dataset.columna;
+                
+                butacaSeleccionada.innerHTML = `Has seleccionado la butaca fila ${numFila}, columna ${numColumna}`;
+            });
+            
+                filaContainer.appendChild(butaca);
+            }
+    
+            salaContainer.appendChild(filaContainer);
+            }   
+        }
+
+        // Llama a la función para generar la sala con los datos pasados desde Django
+        generarSala();
+    </script>
+</body>
+{% endblock %}

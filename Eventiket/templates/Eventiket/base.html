@@ -1,0 +1,129 @@
+<html>
+
+<head>
+
+    {% load static %}
+
+    <!-- Bootstrap -->
+    <link href="{% static 'Eventiket/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+     <!-- Fonts -->
+    
+     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet"> 
+     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
+     <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel='stylesheet'>
+     <link rel="shortcut icon" type="image/png" href="{% static 'Eventiket/img/Tick.png' %}"/>
+
+    <!-- Styles -->
+    <link href="{% static 'Eventiket/css/gestion.css' %}" rel="stylesheet">
+    <link href="{% static 'Eventiket/css/peliculas.css' %}" rel="stylesheet">
+    <!--<link href="{% static 'Eventiket/css/sala_detail.css' %}" rel="stylesheet">-->
+    <p id="weather-container"></p>
+</head>
+
+<body>
+
+    <h1 class="site-heading text-center text-white d-none d-lg-block">
+      
+        <span class="site-heading-lower">Eventiket</span>
+      </h1>
+
+    <div style="text-align: left; margin-left: 50px; color: aliceblue;">
+    {% if user.is_authenticated %}
+      Hola {{user.username}} &nbsp; &nbsp; <a href="{% url 'cerrar_sesion' %}" style="color: aliceblue;">Cerrar Sesión</a>
+    {% else %}
+      <a href="{% url 'login' %}" style="color: aliceblue;">Login</a> &nbsp; &nbsp; <a href="{% url 'vregistro' %}" style="color: aliceblue;">Registrate</a>
+    {% endif %}
+    </div>
+
+
+ <!-- Navbar -->
+ <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand text-uppercase text-expanded font-weight-bold d-lg-none" href="{% url 'home' %}">Gestión de Pedidos</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item {% if request.path == '/' %}active{% endif %} px-lg-4">
+            <a class="nav-link text-uppercase text-expanded" href="{% url 'home' %}">Inicio</a>
+          </li>
+          <li class="nav-item {% if request.path == '/peliculas/' %}active{% endif %} px-lg-4">
+            <a class="nav-link text-uppercase text-expanded" href="{% url 'peliculas' %}">Peliculas</a>
+          </li>
+          </li>
+          <li class="nav-item {% if request.path == '/contacto/' %}active{% endif %} px-lg-4">
+            <a class="nav-link text-uppercase text-expanded" href="{% url 'contacto' %}">Contacto</a>
+          </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item {% if request.path == '/perfil/' %}active{% endif %} px-lg-4">
+              <a class="nav-link text-uppercase text-expanded" href="{% url 'perfil' %}">Perfil</a>
+          </li>
+          {% endif %}
+          {% if user.is_authenticated and user.is_superuser %}
+          <li class="nav-item {% if request.path == '/perfil/' %}active{% endif %} px-lg-4">
+            <a class="nav-link text-uppercase text-expanded" href="/admin/">Admin</a>
+          </li>
+          {% endif %}
+         
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+<!-- Contenido cambiante -->
+{% block content %}
+
+
+{% endblock %}
+
+<main>
+
+  <div class="icon">
+    <a href="https://www.instagram.com/eventiketweb/">
+      <svg heigth="80" width="80">
+          <circle cx="40" cy="40" r=35 stroke="white" stroke-width="4" fill="none" ></circle>
+      </svg>
+      <i class='bx bxl-instagram'></i>
+    </a>
+  </div>
+
+  <div class="icon">
+    <a href="https://twitter.com/EventiketWeb">
+      <svg heigth="80" width="80">
+          <circle cx="40" cy="40" r=35 stroke="white" stroke-width="4" fill="none" ></circle>
+      </svg>
+      <i class='bx bxl-twitter' ></i>
+    </a>
+  </div>
+
+  <div class="icon">
+    <a href="mailto:eventiketweb@gmail.com">
+      <svg heigth="80" width="80">
+          <circle cx="40" cy="40" r=35 stroke="white" stroke-width="4" fill="none" ></circle>
+      </svg>
+      <i class='bx bxl-gmail' ></i>
+    </a>
+  </div>
+  
+</main>    
+
+    <!-- Footer-->
+<footer class="footer text-faded text-center py-5">
+  <div class="containerFooter"></div>
+</footer>
+
+    <!-- Bootstrap -->
+    <script src="{% static 'Eventiket/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'Eventiket/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'Eventiket/vendor/bootstrap/js/scriptReloj.js' %}"></script>
+    <script src="{% static 'Eventiket/vendor/bootstrap/js/peliculas.js' %}"></script>
+    <script src="{% static 'Eventiket/vendor/bootstrap/js/sala_detail.js' %}"></script>
+    <!--<script src="{% static 'Eventiket/vendor/bootstrap/js/sala_detail.js' %}"></script>-->
+
+</body>
+
+
+</html>

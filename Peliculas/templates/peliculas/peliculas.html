@@ -1,0 +1,48 @@
+{% extends "Eventiket/base.html" %}
+
+{% load static %}
+
+
+{% block content %}
+
+    <div class="peliculas-container">
+
+        {% for pelicula in peliculas %}
+
+        <div class="pelicula-card">
+            <div class="pelicula-img">
+                <img src="{{pelicula.imagen.url}}">
+            </div>
+            <div class="pelicula-info">
+                <h2>{{pelicula.titulo}}</h2>
+                <p>{{pelicula.descripcion}}</p>
+                <p>{{pelicula.duracion_horas}}h {{pelicula.duracion_minutos}}min</p>
+                <p>{{pelicula.clasificacion_edad}}</p>
+                <p>Precio: {{pelicula.precio}}€</p>
+                <button class="sesiones-btn" data-target="modal{{ pelicula.pk }}">Ver Sesiones</button>
+            </div>
+            
+            <div class="spacer">
+                <div id="modal{{ pelicula.pk }}" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <h3>{{ pelicula.titulo }}</h3>
+                        <p>Horarios de Sesiones:</p>
+                        <ul>
+                            {% for sesion in pelicula.sesiones.all %}
+                            <li>{{ sesion.fecha }} - {{ sesion.hora }}
+                                (<a href="{% url 'prueba' sesion_id=sesion.id %}">Ver Sala</a>)
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

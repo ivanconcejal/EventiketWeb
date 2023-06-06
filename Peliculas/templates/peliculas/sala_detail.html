@@ -1,0 +1,66 @@
+{% extends "Eventiket/base.html" %}
+{% block content %}
+{% load static %}
+<link href="{% static 'Eventiket/css/sala_detail.css' %}" rel="stylesheet">
+<body>
+<div class="body">
+  <div class="pelicula-card">
+    <div class="pelicula-img">
+        <img src="{{imagen.url}}">
+    </div>
+    <div class="pelicula-info">
+        <h2>{{titulo}}</h2>
+        <p>{{horas}}h {{minutos}}min</p>
+        <p>{{edad}}</p>
+        <p>Dia {{fecha}} {{hora}}</p>
+        <p>Precio: {{precio}}€</p>
+    </div>
+  </div>
+  <!--<p>{{ num_filas }}</p>
+  <p>{{ num_columnas }}</p>-->
+  <form method="post" action="{% url 'reserva' sesion_id=sesion_id %}">
+    {% csrf_token %}
+    <input type="hidden" name="butacas_seleccionadas" id="butacas-seleccionadas-input">
+    <div class="containerS">
+      <h1>{{ nombre }}</h1>
+      <div>
+        <ul class="showcase">
+          <li>
+            <div class="seat"></div>
+            <small>N/A</small>
+          </li>
+      
+          <li>
+            <div class="seat selected"></div>
+            <small>Seleccionado</small>
+          </li>
+      
+          <li>
+            <div class="seat occupied"></div>
+            <small>Ocupado</small>
+          </li>
+        </ul>
+      </div>
+      <div class="screen"></div>
+      {% for row_counter in ""|rjust:num_filas|make_list %}
+        {% with forloop.counter as fila %}
+          <div class="row" data-fila="{{ fila }}">
+            {% for seat_counter in ""|rjust:num_columnas|make_list %}
+              {% with forloop.counter as columna %}
+                <div class="seat" data-fila="{{ fila }}" data-columna="{{ columna }}" onclick="seleccionarButaca(this)"></div>
+              {% endwith %}
+            {% endfor %}
+          </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+    <div class="button-container">
+      <button type="submit" class="btn btn-primary">Reservar</button>
+    </div>
+  </form>
+    <div id="butaca-seleccionada"></div>
+  </div>
+  <script src="{% static 'Eventiket/vendor/bootstrap/js/sala_detail.js' %}"></script>
+</body>
+{% endblock %}
+

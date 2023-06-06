@@ -1,0 +1,233 @@
+{% extends "Eventiket/base.html" %}
+{% block content %}
+{% load static %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- Ensures optimal rendering on mobile devices. -->
+<link href="{% static 'Eventiket/css/sala_detail.css' %}" rel="stylesheet">
+<style>
+.resumen-compra {
+  position: fixed;
+  top: 50%;
+  right: 0%;
+  transform: translateY(-50%);
+  width: 300px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.resumen-compra h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: black;
+}
+
+.resumen-compra #butacas-seleccionadas-list {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 10px;
+  color: black;
+}
+
+.resumen-compra #butacas-seleccionadas-list li {
+  margin-bottom: 5px;
+  color: black;
+}
+
+.resumen-compra #precio-total {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: black;
+}
+
+
+.resumen-compra #reservar-btn {
+  width: 100%;
+  background-color: #0be881;
+  border: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.resumen-compra #reservar-btn:hover {
+  background-color: #0ae76f;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="peli">
+      <div class="pelicula-card">
+        <div class="pelicula-img">
+          <img src="{{imagen.url}}">
+        </div>
+        <div class="pelicula-info">
+          <h2>{{titulo}}</h2>
+          <p>{{horas}}h {{minutos}}min</p>
+          <p>{{edad}}</p>
+          <p>Dia {{fecha}} {{hora}}</p>
+          <p>Precio: {{precio}}€</p>
+        </div>
+      </div>
+      <!--<p>{{ num_filas }}</p>
+      <p>{{ num_columnas }}</p>-->
+      <form method="post" action="{% url 'enviar_correo_confirmacion' %}">
+        {% csrf_token %}
+        <input type="hidden" name="butacas_seleccionadas" id="butacas-seleccionadas-input">
+        <input type="hidden" name="titulo" value="{{ titulo }}">
+        <input type="hidden" name="horas" value="{{ horas }}">
+        <input type="hidden" name="minutos" value="{{ minutos }}">
+        <input type="hidden" name="edad" value="{{ edad }}">
+        <input type="hidden" name="fecha" value="{{ fecha }}">
+        <input type="hidden" name="hora" value="{{ hora }}">
+        <input type="hidden" id="precio-total-input" name="precio_total">
+        <input type="hidden" name="sala_id" value="{{ sala_id }}">
+        <div class="containerS">
+          <h1>{{ nombre }}</h1>
+          <div>
+            <ul class="showcase">
+              <li>
+                <div class="seat"></div>
+                <small>N/A</small>
+              </li>
+          
+              <li>
+                <div class="seat selected"></div>
+                <small>Seleccionado</small>
+              </li>
+          
+              <li>
+                <div class="seat occupied"></div>
+                <small>Ocupado</small>
+              </li>
+            </ul>
+          </div>
+          <div class="screen"></div>
+          <div id="sala-container"
+              data-num-filas="{{ num_filas }}"
+              data-num-columnas="{{ num_columnas }}"
+              data-fila-seleccionada="{{ fila_seleccionada }}"
+              data-columna-seleccionada="{{ columna_seleccionada }}"
+              data-precio="{{ precio }}">
+            {% for butaca in butacas %}
+              <div class="butaca{% if butaca.ocupada %} seat-occupied{% else %} seat{% endif %}"
+                   data-fila="{{ butaca.fila }}"
+                   data-columna="{{ butaca.columna }}"></div>
+            {% endfor %}
+          </div>
+        </div>
+    </div>
+    <div class="resumen-compra">
+      <h2>Resumen de la compra</h2>
+      <div id="butaca-seleccionada"></div>
+      <ul id="butacas-seleccionadas-list"></ul>
+      <div id="precio-total">Precio Total: {{ precio_total }}€</div>
+      <button id="reservar-btn">Reservar</button>
+    </div>
+  </form>
+  </div>
+</body>
+
+  
+  <script>
+    function generarSala() {
+      const salaContainer = document.getElementById('sala-container');
+      const numFilas = parseInt(salaContainer.dataset.numFilas);
+      const numColumnas = parseInt(salaContainer.dataset.numColumnas);
+      const filaSeleccionada = parseInt(salaContainer.dataset.filaSeleccionada);
+      const columnaSeleccionada = parseInt(salaContainer.dataset.columnaSeleccionada);
+      const precio = parseFloat(salaContainer.dataset.precio);
+      const butacasSeleccionadasList = document.getElementById('butacas-seleccionadas-list');
+      const precioTotalElement = document.getElementById('precio-total');
+      const realizarPagoBtn = document.getElementById('realizar-pago-btn');
+
+      let precioTotal = 0;
+      const butacasSeleccionadas = [];
+
+      for (let fila = 1; fila <= numFilas; fila++) {
+  const filaContainer = document.createElement('div');
+  filaContainer.classList.add('row');
+
+  for (let columna = 1; columna <= numColumnas; columna++) {
+    const butaca = document.createElement('div');
+    butaca.classList.add('seat');
+    butaca.dataset.fila = fila;
+    butaca.dataset.columna = columna;
+
+    // Agrega esta lógica para marcar como ocupadas las butacas seleccionadas
+    if (fila === filaSeleccionada && columna === columnaSeleccionada) {
+            butaca.classList.add('seat');
+            // butacasSeleccionadas.push(`${fila}-${columna}`);
+          }
+          
+          butaca.addEventListener('click', function() {
+  const numFila = this.dataset.fila;
+  const numColumna = this.dataset.columna;
+
+  if (butaca.classList.contains('selected')) {
+    // Si la butaca ya está seleccionada, la deselecciona
+    butaca.classList.remove('selected');
+    const index = butacasSeleccionadas.indexOf(`${numFila}-${numColumna}`);
+    if (index > -1) {
+      butacasSeleccionadas.splice(index, 1);
+    }
+    precioTotal -= calcularPrecio(numFila, numColumna, precio);
+  } else {
+    // Si la butaca no está seleccionada, la marca como seleccionada
+    butaca.classList.add('selected');
+    butacasSeleccionadas.push(`${numFila}-${numColumna}`);
+    precioTotal += calcularPrecio(numFila, numColumna, precio);
+  }
+
+  // Actualizar las butacas seleccionadas en el campo oculto
+  document.getElementById('butacas-seleccionadas-input').value = butacasSeleccionadas.join(',');
+
+  butacasSeleccionadasList.innerHTML = '';
+  butacasSeleccionadas.forEach(butacaSeleccionada => {
+    const li = document.createElement('li');
+    li.textContent = `Butaca fila ${butacaSeleccionada.split('-')[0]}, columna ${butacaSeleccionada.split('-')[1]}`;
+    butacasSeleccionadasList.appendChild(li);
+  });
+
+  // Verificar si no hay butacas seleccionadas para mostrar el precio total como 0
+  if (butacasSeleccionadas.length === 0) {
+    precioTotal = 0;
+  }
+
+  precioTotalElement.innerHTML = `Precio Total: ${precioTotal.toFixed(2)}€`;
+  document.getElementById('precio-total-input').value = precioTotal;
+});
+
+          filaContainer.appendChild(butaca);
+        }
+
+        salaContainer.appendChild(filaContainer);
+      }
+
+      // Función para calcular el precio de una butaca específica
+      function calcularPrecio(fila, columna, precio) {
+        // Aquí puedes implementar la lógica para calcular el precio de una butaca específica
+        // Puedes usar los datos que tienes disponibles, como el tipo de sala, la ubicación de la butaca, etc.
+        // Devuelve el precio correspondiente
+        // Ejemplo:
+        // if (fila <= 5) {
+        //   return 10.00;
+        // } else {
+        //   return 15.00;
+        // }
+        // Reemplaza la lógica anterior con tu propia implementación
+        return precio; // Precio de ejemplo
+      }
+    
+    }
+
+    // Llama a la función para generar la sala con los datos pasados desde Django
+    generarSala();
+  </script>
+</body>
+{% endblock %}
+
